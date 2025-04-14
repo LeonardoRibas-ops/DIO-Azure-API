@@ -1,1 +1,77 @@
+openapi: 3.0.1
+info:
+  title: API de Pagamento Segura
+  description: API para processar pagamentos com validação e segurança usando Azure Functions.
+  version: "1.0.0"
+servers:
+  - url: https://{apim-hostname}/v1
+    variables:
+      apim-hostname:
+        default: sua-api.azure-api.net
+paths:
+  /pagamento:
+    post:
+      summary: Processa um pagamento
+      operationId: processarPagamento
+      tags:
+        - Pagamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequisicaoPagamento'
+      responses:
+        "200":
+          description: Pagamento processado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaPagamento'
+        "400":
+          description: Erro na requisição
+        "500":
+          description: Erro interno do servidor
+      security:
+        - subscriptionKey: []
+components:
+  securitySchemes:
+    subscriptionKey:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+  schemas:
+    RequisicaoPagamento:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          format: float
+          example: 199.90
+        currency:
+          type: string
+          example: BRL
+        method:
+          type: string
+          example: cartao
+    RespostaPagamento:
+      type: object
+      properties:
+        status:
+          type: string
+          example: sucesso
+        transacao_id:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+        valor:
+          type: number
+          example: 199.90
+        moeda:
+          type: string
+          example: BRL
+        metodo:
+          type: string
+          example: cartao
 
